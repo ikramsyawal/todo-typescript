@@ -32,12 +32,14 @@ const initialState: Todos = [];
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState, getInitialTodos);
   const [text, setText] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   function handleAdd(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    if (!text) return;
+    if (!text.trim()) return;
     dispatch({ type: "ADD", payload: { text: text } });
     setText("");
+    inputRef.current?.focus();
   }
 
   useEffect(() => {
@@ -58,6 +60,7 @@ function App() {
       <form>
         <label htmlFor="">Add Todo</label>
         <input
+          ref={inputRef}
           onChange={(e) => setText(e.target.value)}
           value={text}
           type="text"
