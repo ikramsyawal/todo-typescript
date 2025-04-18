@@ -1,4 +1,4 @@
-import { useReducer, useState, MouseEvent } from "react";
+import { useReducer, useState, MouseEvent, useEffect, useRef } from "react";
 import { Todo, Todos, Action } from "./types";
 
 function reducer(state: Todos, action: Action) {
@@ -20,7 +20,7 @@ function reducer(state: Todos, action: Action) {
 
 function newTodo(text: string): Todo {
   return {
-    id: Date.now(),
+    id: Date.now() + Math.random(),
     text: text,
     completed: false,
     createdAt: new Date(),
@@ -30,7 +30,7 @@ function newTodo(text: string): Todo {
 const initialState: Todos = [];
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState, getInitialTodos);
   const [text, setText] = useState("");
 
   function handleAdd(e: MouseEvent<HTMLButtonElement>) {
@@ -39,10 +39,23 @@ function App() {
     dispatch({ type: "ADD", payload: { text: text } });
     setText("");
   }
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(state));
+  }, [state]);
+
+  function getInitialTodos() {
+    const todos = localStorage.getItem("todos");
+    return todos ? JSON.parse(todos) : [];
+  }
+
+  useEffect(() => {
+    console.log(state, "state changed");
+  }, [state]);
   return (
     <div className="p-4">
       <h1>Todo Apps</h1>
-      <form action="">
+      <form>
         <label htmlFor="">Add Todo</label>
         <input
           onChange={(e) => setText(e.target.value)}
