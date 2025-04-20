@@ -11,3 +11,8 @@ export type Action =
   | { type: "ADD"; payload: { text: string } }
   | { type: "DELETE"; payload: { id: number } }
   | { type: "TOGGLE"; payload: { id: number } };
+
+export type TodoContext = {
+  state: Todos;
+  dispatch: React.Dispatch<Action>;
+};
